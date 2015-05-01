@@ -35,8 +35,8 @@ class ApiActor(sc:SparkContext) extends HttpServiceActor with ActorLogging
 		path("hello") {
 			get {
 //				complete(Demo("hello","world!"))
-				val message=sc.parallelize(1 to 200).sum
-				complete(s"hello, world! $message")
+				val message=sc.parallelize(1 to 500).sum
+				complete(s"hello, world!... $message")
 				// complete(404)
 			} ~
 			put {
