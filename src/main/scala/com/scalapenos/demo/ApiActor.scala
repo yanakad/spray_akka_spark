@@ -9,6 +9,10 @@ import spray.routing._
 import util._
 // import SprayJsonSupport._
 
+
+import org.apache.spark._
+import org.apache.spark.SparkContext._
+
 // 2 spaces indentation
 case class Demo(greeting: String, name: String)
 
@@ -22,13 +26,16 @@ object ApiActor {
 }
 
 //class ApiActor extends HttpServiceActor with ActorLogging
-class ApiActor(message:String) extends HttpServiceActor with ActorLogging
+//class ApiActor(message:String) extends HttpServiceActor with ActorLogging
+
+class ApiActor(sc:SparkContext) extends HttpServiceActor with ActorLogging
 {
 	def receive = runRoute(
 		//pathPrefix("foo") {
 		path("hello") {
 			get {
 //				complete(Demo("hello","world!"))
+				val message=sc.parallelize(1 to 200).sum
 				complete(s"hello, world! $message")
 				// complete(404)
 			} ~
