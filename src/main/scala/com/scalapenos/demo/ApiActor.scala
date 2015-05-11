@@ -12,6 +12,7 @@ import util._
 
 import org.apache.spark._
 import org.apache.spark.SparkContext._
+import org.apache.spark.sql._
 
 // 2 spaces indentation
 case class Demo(greeting: String, name: String)
@@ -35,8 +36,16 @@ class ApiActor(sc:SparkContext) extends HttpServiceActor with ActorLogging
 		path("hello") {
 			get {
 //				complete(Demo("hello","world!"))
-				val message=sc.parallelize(1 to 500).sum
-				complete(s"hello, world!... $message")
+				//val message=sc.parallelize(1 to 500).sum
+				val sqlContext = new SQLContext(sc)
+        System.out.println(" ******Try parquet");
+       sqlContext.parquetFile("/home/ykadiysk/Github/spark-1.2.1-bin-hadoop2.3/bin/large.parquet").registerTempTable("large");
+    
+        System.out.println(" ******Register done");
+        val res = sqlContext.sql("select * from large LIMIT 1").collect
+        println("HERE...")
+        val message = res(0)
+        complete(s"hello, world!... $message")
 				// complete(404)
 			} ~
 			put {

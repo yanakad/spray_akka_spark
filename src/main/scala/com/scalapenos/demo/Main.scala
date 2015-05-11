@@ -16,7 +16,7 @@ object Main extends App
 	//val api = system.actorOf(ApiActor.props, "api-actor")
 	//val sc = "Test global prop"
 	
-    def sc = new SparkContext("local[2]", "testApp")  
+  def sc = new SparkContext(sys.env("SPARK_MASTER"), "testSprayApp")  
 	val api = system.actorOf(Props(new ApiActor(sc)))
 	IO(Http) ! Http.Bind(listener = api,
 		interface = "0.0.0.0",
